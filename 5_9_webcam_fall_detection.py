@@ -97,6 +97,7 @@ def prepare_batch(images, network, channels=3):
     return darknet.IMAGE(width, height, channels, darknet_images)
 
 
+
 def image_detection(image_path, network, class_names, class_colors, thresh):
     # Darknet doesn't accept numpy images.
     # Create one with image we reuse for each detect
@@ -116,7 +117,8 @@ def image_detection(image_path, network, class_names, class_colors, thresh):
     image = draw_boxes(detections, image_resized, class_colors)
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 
-
+# global variable for recognition of fall-detection occur
+fall = 0
 ############################################
 ######### draw_boxes for fall-detection ####
 ############################################
@@ -130,17 +132,23 @@ def draw_boxes(detections, image, colors):
             person_width = right - left
             person_height = bottom - top
 
-            # if width / height is more than 1.2
+            global fall
+            # if width / height is more than 1.1
             if person_width/person_height > 1.1:
                 cv2.rectangle(image, (left, top), (right, bottom), (255, 0, 0), 1)
                 cv2.putText(image, "{} [{:.2f}] {}".format(label, float(confidence), 'fall detected!'),
                             (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                             (255, 0, 0), 2)
+                # when fall-detection is keep occuring, global variable fall is keep growing
+                fall += 1
             else:
                 cv2.rectangle(image, (left, top), (right, bottom), colors[label], 1)
                 cv2.putText(image, "{} [{:.2f}]".format(label, float(confidence)),
                             (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                             colors[label], 2)
+                # when fall-detection is not detected, global variable fall will be reset to 0
+                fall = 0
+
             
     return image
 
@@ -280,6 +288,13 @@ def main():
             print_detections(detections, args.ext_output)
             fps = float(1/(time.time() - prev_time))
             print("FPS: {}".format(fps))
+
+            # variable fall is a count number how long does fall-detection continue
+            print("\n%d" %(fall))
+            # save image when fall is more than 10
+            if fall > 10:
+                cv2.imwrite("./fall_detected.jpg", image)
+
             cv2.imshow('Inference', image)
             if cv2.waitKey(1) != -1:
                 break
