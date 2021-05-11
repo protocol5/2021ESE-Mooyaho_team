@@ -2,8 +2,8 @@
 ### FALL - DETECTION PART
    
    
-- fall-detection 구현   
-   
+#### fall-detection 구현   
+<hr/>
 Yolov3-416 모델을 이용해 사람을 인식하고, 생성된 box의 너비와 높이 비율을 이용해 넘어짐을 감지한다.   
 
 1. 영상   
