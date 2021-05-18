@@ -27,7 +27,7 @@ while(1):
 
     # if count = 1, wait 3 seconds for rewriting the image and imshow for 2 seconds
     if count == 1:
-        time.sleep(3)
+        time.sleep(1)
         image = cv2.imread(img_file, cv2.IMREAD_COLOR)
         cv2.imshow('wow', image)
         cv2.waitKey(2000)
