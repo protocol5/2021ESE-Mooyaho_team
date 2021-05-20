@@ -19,4 +19,4 @@
 
 #### csv 파일
   - bus_routd_id.csv는 버스의 번호와 그에 맞는 고유의 id가 저장
-  - bus_stop_id.csv는 버스정류장의 고유 id, 고유 ARS번호,버스정류장 이름이  
+  - bus_stop_id.csv는 버스정류장의 고유 id, 고유 ARS번호,버스정류장 이름이 
