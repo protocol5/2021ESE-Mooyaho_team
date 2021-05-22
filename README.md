@@ -2,6 +2,19 @@
 Mooyaho(It's that much fun) team's project repos. Lecture is 2021 Embedded Systems and Experiment.
 
 ---
+## What is ***Bus - No Stop  prevention System*** ?
+
+### 1. **Architectures**
+![image](https://user-images.githubusercontent.com/68097267/119214887-2088d100-bb05-11eb-9727-e45ee50fafc5.png)
+
+![image](https://user-images.githubusercontent.com/68097267/119214895-2da5c000-bb05-11eb-8982-121555db8a86.png)
+
+![image](https://user-images.githubusercontent.com/68097267/119214932-680f5d00-bb05-11eb-9691-f054c56bde27.png)
+
+### 2. **Introduction**
+ 무정차 방지 및 승객의 안전을 고려한 사용자 친화적인 정류장 승차 시스템은 버스를 이용하는 이용객과 버스 기사들의 편의성과 안전을 제공하는 시스템이다. 무정차 문제를 해결하기 위해 이용객은 해당 시스템을 이용하며 시스템에 지정된 번호를 통해 가장 가까운 버스에 해당 버스를 이용할 이용객이 있음을 알린다. 또한, 이미지 인식을 통해서 이용객의 안전을 파악하고 가까운 공공기관에 사고 알림을 알리게 된다. 이를 통해서 도심 외곽 쪽에서 계속 대두되는 문제인 무정차 문제와 일반적으로 취약한 치안 문제를 동시에 해결하고자 한다. 시스템은 기준 이하의 전송속도를 가지며 UX를 고려해 직관적이고 간단한 인터페이스를 제공한다.
+
+---
 
 ## Bus stop Interface
 
