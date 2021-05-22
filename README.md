@@ -1,6 +1,32 @@
 # **2021ESE-Mooyaho_team**
 Mooyaho(It's that much fun) team's project repos. Lecture is 2021 Embedded Systems and Experiment.
 
+---
+
+## Bus stop Interface
+### 버스 정류장 인터페이스 구현
+
+1. **구현사항**
+
+ - 공공 데이터 포털에서 제공하는 서울시 버스도착정보 API를 이용해 특정 버스 정류장에 도착하는 버스 및 버스가 도착하는 시간을 가져온다.
+ - 도착하는 버스들의 번호를 클릭할 수 있는 버튼으로 만들어 클릭할 수 있도록한다.
+ - 버스 번호를 선택하면 해당 버튼은 다시 누를 수 없도록 구현한다.
+ - 해당 버스가 정류장을 통과하면 버튼은 다시 누를 수 있는 상태가 된다.
+
+![image](https://user-images.githubusercontent.com/68097144/118111434-a67a8d00-b41e-11eb-9118-5527857e148e.png)
+
+
+
+2. **구현해야할 사항**
+  - 특정 정류장에서 도착할 수 있는 정류장들을 UI상에 띄우기
+  - 정류장 선택 버튼 만들기
+  - 정류장 선택시 해당 정류장에 도착하는 버스 중 가장 빠르게 오는 버스에 승차 신호 전송
+
+3. **csv 파일**
+  - bus_routd_id.csv는 버스의 번호와 그에 맞는 고유의 id가 저장
+  - bus_stop_id.csv는 버스정류장의 고유 id, 고유 ARS번호,버스정류장 이름이 
+
+------
 
 ## GCP Web Server
 
