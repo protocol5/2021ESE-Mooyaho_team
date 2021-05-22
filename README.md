@@ -4,6 +4,7 @@ Mooyaho(It's that much fun) team's project repos. Lecture is 2021 Embedded Syste
 ---
 
 ## Bus stop Interface
+
 ### 버스 정류장 인터페이스 구현
 
 1. **구현사항**
@@ -26,7 +27,36 @@ Mooyaho(It's that much fun) team's project repos. Lecture is 2021 Embedded Syste
   - bus_routd_id.csv는 버스의 번호와 그에 맞는 고유의 id가 저장
   - bus_stop_id.csv는 버스정류장의 고유 id, 고유 ARS번호,버스정류장 이름이 
 
-------
+----
+## FALL - DETECTION PART
+   
+
+#### 기능 1 : fall-detection 구현
+
+Yolov3-416 모델을 이용해 사람을 인식하고, 생성된 box의 너비와 높이 비율을 이용해 넘어짐을 감지한다.   
+
+1. 영상   
+
+https://user-images.githubusercontent.com/74461222/117812298-9a66c200-b29c-11eb-8c00-ee61b187bff4.mp4
+<hr/>
+
+
+
+#### 기능 2 : fall-detect가 5초 이상 지속될 때, 마지막 이미지 저장
+기초 구현완료
+   
+<hr/>
+
+
+#### 기능 3 : 저장된 이미지를 ftp 프로토콜을 이용해 라즈베리파이에 전송
+기초 구현완료 
+<hr/>   
+
+#### 기능 4 : ftp 서버가 구축된 라즈베리파이에서 이미지파일을 새로 전송받거나 수정시간이 갱신될 때 이미지 팝업 띄우기
+기초 구현완료
+<hr/>
+
+----
 
 ## GCP Web Server
 
@@ -94,3 +124,6 @@ $ sudo mv ./web_db_manager ./bs
 > Server Static IP/bs/login.php
 
 > Server Static IP는 서버 고정 아이피를 뜻한다.
+
+---
+## Bus Driver Interface
