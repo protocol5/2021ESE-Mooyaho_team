@@ -64,4 +64,5 @@ $ sudo mv ./web_db_manager ./bs
 
 6. 다음 URL로 접근하여 출력되는지 확인한다.
 > Server Static IP/bs/login.php
+
 > Server Static IP는 서버 고정 아이피를 뜻한다.
