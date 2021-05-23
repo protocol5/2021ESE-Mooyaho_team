@@ -133,7 +133,7 @@ while(1):
 
 
         # connect GCP with ssh
-        host = '34.64.138.186'
+        host = '34.64.183.238'
         username = 'moyahoo'
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())

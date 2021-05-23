@@ -4,7 +4,7 @@ import paramiko
 bus_stop_id = '105000102'
 
 # connect GCP with ssh
-host = '34.64.138.186'
+host = '34.64.183.238'
 username = 'moyahoo'
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -24,7 +24,7 @@ print("connect success")
 
 # file upload
 sftp.chdir('/home/moyahoo/fall_detection')
-sftp.put('/home/myh/Pictures/darknet.png', bus_stop_id+'.jpg')
+sftp.put('/home/myh/Pictures/darknet.png', 'darknet.jpg')
 
 
 # cd to fall_detection and print ls
