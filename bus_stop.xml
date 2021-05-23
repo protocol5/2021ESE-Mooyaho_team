@@ -1,0 +1,20 @@
+<!-- bus_stop_name 은 현재 정류장 나머지는 표시할 정류장들 -->
+
+<bus_stop>
+    <bus_stop_id>
+        <bus_stop_name>105000102</bus_stop_name>
+        <bus_stop_1>105000015</bus_stop_1>
+        <bus_stop_2>105000105</bus_stop_2>
+        <bus_stop_3>102000071</bus_stop_3>
+        <bus_stop_4>105000109</bus_stop_4>
+        <bus_stop_5>121000011</bus_stop_5>
+    </bus_stop_id>
+    <bus_stop_id>
+        <bus_stop_name>112000005</bus_stop_name>
+        <bus_stop_1>112000026</bus_stop_1>
+        <bus_stop_2>111000096</bus_stop_2>
+        <bus_stop_3>101000004</bus_stop_3>
+        <bus_stop_4>113000420</bus_stop_4>
+        <bus_stop_5>113000478</bus_stop_5>
+    </bus_stop_id>
+</bus_stop>
