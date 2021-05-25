@@ -97,7 +97,8 @@ def prepare_batch(images, network, channels=3):
     return darknet.IMAGE(width, height, channels, darknet_images)
 
 
-
+# global variable for recognition of fall-detection occur
+fall = 0
 def image_detection(image_path, network, class_names, class_colors, thresh):
     # Darknet doesn't accept numpy images.
     # Create one with image we reuse for each detect
@@ -115,10 +116,13 @@ def image_detection(image_path, network, class_names, class_colors, thresh):
     detections = darknet.detect_image(network, class_names, darknet_image, thresh=thresh)
     darknet.free_image(darknet_image)
     image = draw_boxes(detections, image_resized, class_colors)
+    global fall
+    # if there is not any detections, make fall = 0
+    if len(detections) == 0:
+        fall = 0
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 
-# global variable for recognition of fall-detection occur
-fall = 0
+
 ############################################
 ######### draw_boxes for fall-detection ####
 ############################################
@@ -148,6 +152,8 @@ def draw_boxes(detections, image, colors):
                             colors[label], 2)
                 # when fall-detection is not detected, global variable fall will be reset to 0
                 fall = 0
+        else:
+            fall = 0
 
             
     return image
