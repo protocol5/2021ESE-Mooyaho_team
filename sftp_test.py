@@ -1,5 +1,8 @@
 import paramiko
 
+# bus stop id
+bus_stop_id = '105000102'
+
 # connect GCP with ssh
 host = '34.64.138.186'
 username = 'moyahoo'
@@ -21,7 +24,7 @@ print("connect success")
 
 # file upload
 sftp.chdir('/home/moyahoo/fall_detection')
-sftp.put('/home/myh/Pictures/darknet.png', 'wow.jpg')
+sftp.put('/home/myh/Pictures/darknet.png', bus_stop_id+'.jpg')
 
 
 # cd to fall_detection and print ls
