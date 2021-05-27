@@ -18,11 +18,11 @@
       $stop_sig = $_POST[ 'stop_sig' ];
       $fall_sig = $_POST[ 'fall_sig' ];
       $input_date = $_POST[ 'input_date' ];
-      $dbuser="kyukk7";
+      $dbuser="uosmooyaho";
       if ( is_null( $list_no ) ) {
         echo '<h1>wrong access!</h1>';
       } else {
-        $jb_conn = mysqli_connect( 'localhost',$dbuser, 'andigh', 'bus_info' );
+        $jb_conn = mysqli_connect( 'localhost',$dbuser, '!Andigh123', 'bus_info' );
         $jb_sql = "INSERT INTO bus_info ( list_no, bus_num, bus_uid, stop_sig, fall_sig, input_date ) VALUES ( '$list_no', '$bus_num', '$bus_uid', '$stop_sig', '$fall_sig', '$input_date' );";
         mysqli_query( $jb_conn, $jb_sql );
         echo '<h1>Success!</h1>';

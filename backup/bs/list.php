@@ -44,7 +44,7 @@
       </thead>
       <tbody>
         <?php
-          $jb_conn = mysqli_connect( 'localhost', 'kyukk7', 'andigh', 'bus_info' );
+          $jb_conn = mysqli_connect( 'localhost', 'uosmooyaho', '!Andigh123', 'bus_info' );
           $delete_list_no = $_POST[ 'delete_list_no' ];
           if ( isset( $delete_list_no ) ) {
             $jb_sql_delete = "DELETE FROM bus_info WHERE list_no = '$delete_list_no';";

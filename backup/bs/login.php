@@ -13,7 +13,7 @@
     ?>
       <h1>이미 로그인하셨습니다.</h1>
       <p>
-       <a href="list.php">LIST BUS INFO</a>
+       <a href="list.php"><button>LIST BUS INFO<button></a>
       </p>
     <?php
       } else {

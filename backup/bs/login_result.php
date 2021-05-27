@@ -23,8 +23,8 @@
       }
     ?>
     <p>
-     <a href="list.php">LIST BUS INFO</a>
-     <a href="login.php">LOG IN</a>
+     <a href="list.php"><button>LIST-BUS-INFO<button></a>
+     <a href="login.php"><button>LOGIN<button></a>
     </p>
   </body>
 </html>

@@ -3,7 +3,7 @@
 ?>
 <?php
   $edit_list_no = $_POST[ 'edit_list_no' ];
-  $jb_conn = mysqli_connect( 'localhost', 'kyukk7', 'andigh', 'bus_info' );
+  $jb_conn = mysqli_connect( 'localhost', 'uosmooyaho', '!Andigh123', 'bus_info' );
   $jb_sql_edit = "SELECT * FROM bus_info WHERE list_no = $edit_list_no;";
   $jb_result = mysqli_query( $jb_conn, $jb_sql_edit );
   $jb_row = mysqli_fetch_array( $jb_result );

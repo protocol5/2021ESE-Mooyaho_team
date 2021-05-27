@@ -17,13 +17,13 @@ DROP TABLE IF EXISTS bus_info;
 
 CREATE TABLE bus_info (
     list_no	INT             NOT NULL,
-    bus_num	INT          	NOT NULL,
+    bus_num	VARCHAR(20)    	NOT NULL,
     bus_uid	INT		NOT NULL,
     stop_sig	INT		NOT NULL,
     fall_sig    INT             NOT NULL,
     input_date  DATE            NOT NULL,
     PRIMARY KEY (list_no)
-);
+)DEFAULT CHARACTER SET utf8;
 
 flush /*!50503 binary */ logs;
 

@@ -21,7 +21,7 @@
       if ( is_null( $list_no ) ) {
         echo '<h1>Update Fail!</h1>';
       } else {
-        $jb_conn = mysqli_connect( 'localhost', 'kyukk7', 'andigh', 'bus_info' );
+        $jb_conn = mysqli_connect( 'localhost', 'uosmooyaho', '!Andigh123', 'bus_info' );
         $jb_sql = "UPDATE bus_info SET bus_num = '$bus_num', bus_uid = '$bus_uid', stop_sig = '$stop_sig', fall_sig='$fall_sig', input_date = '$input_date' WHERE list_no = $list_no;";
         mysqli_query( $jb_conn, $jb_sql );
         echo '<h1>Success!</h1>';
