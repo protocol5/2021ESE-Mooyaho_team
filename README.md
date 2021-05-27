@@ -66,3 +66,9 @@ $ sudo mv ./web_db_manager ./bs
 > Server Static IP/bs/login.php
 
 > Server Static IP는 서버 고정 아이피를 뜻한다.
+
+### How To 'Backup DB' Import?
+```
+$ mysql -u root -p bus_info < bus_info.sql
+```
+해당 과정이 멈춘다면 클라우드서버를 재시작하길 권장한다.
