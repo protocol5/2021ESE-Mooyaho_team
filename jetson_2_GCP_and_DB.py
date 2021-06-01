@@ -57,6 +57,8 @@ def find_soon(jsonObj):
 def find_fast_arr(jsonObj):
     for i, item in enumerate(jsonObj['itemList']):
         # 첫 번째 시간을 받은 상태라면
+        if '운행' in item['arrmsg1'] or '막차' in item['arrmsg1']:
+                item['arrmsg1'] = '100분'
         if i == 0:
             arr_time = item['arrmsg1']
             bus_id = item['busRouteId']
@@ -65,6 +67,7 @@ def find_fast_arr(jsonObj):
             # 미리 담은 arr_time보다 현재 for문에서 받은 item['arrmsg1']이 더 빠를 경우 arr_time을 갱신한다.
 
             time1 = int(arr_time.split('분')[0])
+            
             time2 = int(item['arrmsg1'].split('분')[0])
             if time1 >= time2:
                 arr_time = item['arrmsg1']
@@ -150,7 +153,7 @@ while(1):
         os.chdir(r"/home/myh/2021ESE-Mooyaho_team/darknet/")
         with open(filename, 'rb') as contents:
             sftp.chdir('/home/moyahoo/fall_detection')
-            sftp.put('/home/myh/2021ESE-Mooyaho_team/darknet/fall_detected.jpg', str(busstop_id)+'.jpg')
+            sftp.put('/home/myh/2021ESE-Mooyaho_team/darknet/fall_detected.jpg', bus_id+'.jpg')
             contents.close()
         sftp.close()
         ssh.close()
@@ -158,9 +161,9 @@ while(1):
 
         # db 정보 및 연결
         mydb = pymysql.connect(
-            user='kyukk7', 
-            passwd='andigh', 
-            host='34.64.138.186', 
+            user='uosmooyaho', 
+            passwd='!Andigh123', 
+            host='34.64.183.238', 
             db='bus_info'
         )
 
@@ -169,29 +172,32 @@ while(1):
 
 
         # fall_sig 수정하기 (if fastest bus_id is changed, the past bus's fall sig is dropped by 0)
-        if past_bus_id != bus_id:
+        if past_bus_id != bus_id and past_bus_id != 0:
             update_fall_sig_partial(0, past_bus_id)
-        fall_sig = 1
-        update_fall_sig_partial(fall_sig, bus_id)
+        # fall_sig = 1
+        update_fall_sig_partial(busstop_id, bus_id)
 
     # else, close the image and continue
     # also, access db and drop the fall_sig
     else:
         # db 정보 및 연결
         mydb = pymysql.connect(
-            user='kyukk7', 
-            passwd='andigh', 
-            host='34.64.138.186', 
+            user='uosmooyaho', 
+            passwd='!Andigh123', 
+            host='34.64.183.238', 
             db='bus_info'
         )
 
         # 커서 객체 생성
         cursor = mydb.cursor(pymysql.cursors.DictCursor)
 
+        # fall_sig 수정하기 (if fastest bus_id is changed, the past bus's fall sig is dropped by 0)
+        if past_bus_id != bus_id and past_bus_id != 0:
+            update_fall_sig_partial(0, past_bus_id)
         
         # fall_sig 수정하기
-        fall_sig = 0
-        update_fall_sig_partial(fall_sig, bus_id)
+        # fall_sig = 0
+        # update_fall_sig_partial(fall_sig, bus_id)
         continue
 
     # renewal the variable (modified time)
