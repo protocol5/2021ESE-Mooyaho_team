@@ -166,7 +166,7 @@ def draw_boxes(detections, image, colors):
         #     fall = 0
 
         
-        if lost_fall > 15:
+        if lost_fall > 20:
             fall = 0
             lost_fall = 0
         print('lost : ', lost_fall)
@@ -319,7 +319,7 @@ def main():
             # variable fall is a count number how long does fall-detection continue
             print("\n%d" %(fall))
             # save image when fall is more than 10
-            if fall > 10:
+            if fall >= 10:
                 cv2.imwrite("./fall_detected.jpg", image)
                 fall = 0
 
