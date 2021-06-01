@@ -1,3 +1,4 @@
+
 from os import read
 import sys
 from PyQt5.QtWidgets import *
@@ -11,13 +12,15 @@ import threading
 import csv 
 import pymysql
 
-##DB 접속
+#DB 접속
 db = pymysql.connect(
-    user = 'kyukk7',
-    passwd = 'andigh',
-    host = "34.64.138.186",
+    user = 'uosmooyaho',
+    passwd = '!Andigh123',
+    host = "34.64.183.238",
     database = "bus_info"
 )
+
+
 
 # 버스 정류장 API 인증 key
 bus_stop_key = "YCw62AJ77rUCLVLmI%2BrkReS65%2F5H4XavS%2BIVCLqjeDLq9MaS9v2BkixjD1xgDBvFG%2F6MvUlcmJ44d1PGxruD4A%3D%3D"
@@ -164,6 +167,8 @@ class QtGUI(QWidget):
         self.setWindowTitle("버스 지유아이")
         self.resize(1280, 800)
 
+        # self.setStyleSheet("background-image : url(back.jpg)")
+
         # but_list 배열에는 버튼들이 담긴다.
         self.but_list = []
         # 이 배열에는 버스 정류장 버튼들이 담긴다.
@@ -174,8 +179,8 @@ class QtGUI(QWidget):
 
 
         # 버스 도착정보 받아오는 쓰레드
-        thread1 = Thread1()
-        thread1.start()
+        # thread1 = Thread1()
+        # thread1.start()
 
         # 버스 관련 버튼 생성
         self.make_previous_button()
@@ -206,14 +211,30 @@ class QtGUI(QWidget):
         for i in range(num_of_bus):
             sem.acquire()
             if FLAGS[i] == 2 :
-                self.but_list[i].setStyleSheet("background-image : url(bus_il4.png); Text-align:top; font-size:40pt; font : Roman")
+                self.but_list[i].setStyleSheet("background-image : url(bus_il4.png);"
+                                "background-color : white;"
+                                "Text-align:top;" 
+                                "font-size:40pt; "
+                                "font : Roman ; "
+                                "border-radius: 15px; "
+                                "border-style: solid;"
+                                "border-width: 3px;"
+                                "border-color: blue")
                 # print(self.but_list[i].isEnabled())
                 self.but_list[i].setEnabled(True)
                 FLAGS[i] = 1
                 self.connect_db(bus_number_array[i] ,0)
 
             elif FLAGS[i] == 0 :
-                self.but_list[i].setStyleSheet("background-image : url(bus_il3.png); Text-align:top; font-size:40pt; font : Roman")
+                self.but_list[i].setStyleSheet("background-image : url(bus_il3.png); "
+                                            "background-color : white;"
+                                            "Text-align:top;" 
+                                            "font-size:40pt; "
+                                            "font : Roman ; "
+                                            "border-radius: 15px; "
+                                            "border-style: solid;"
+                                            "border-width: 3px;"
+                                            "border-color: red")
                 # print(self.but_list[i].isEnabled())
                 self.but_list[i].setEnabled(False)
             sem.release()
@@ -228,7 +249,17 @@ class QtGUI(QWidget):
         button = QPushButton(str(bus_number), self)
         # button.setEnabled(True)
         button.resize(280, 120)
-        button.setStyleSheet("background-image : url(bus_il4.png); Text-align:top; font-size:40pt; font : Roman")
+        button.setStyleSheet("background-image : url(bus_il4.png); "
+                            "background-color : white;"
+                            "Text-align:top;" 
+                            "font-size:40pt; "
+                            "font : Roman ; "
+                            "border-radius: 15px; "
+                            "border-style: solid;"
+                            "border-width: 3px;"
+                            "border-color: blue")
+                             
+                             
 
         w = 0
         v = 0
@@ -248,7 +279,15 @@ class QtGUI(QWidget):
 
         if button.text() == '':
             button.setEnabled(False)
-            button.setStyleSheet("background-image : url(bus_il3.png); Text-align:top; font-size:40pt; font : Roman")
+            button.setStyleSheet("background-image : url(bus_il3.png);"
+                                "background-color : white;"
+                                "Text-align:top;" 
+                                "font-size:40pt; "
+                                "font : Roman ; "
+                                "border-radius: 15px; "
+                                "border-style: solid;"
+                                "border-width: 3px;"
+                                "border-color: red")
             # button.push
 
         button.clicked.connect(lambda: self.click_bus_num(button))
@@ -258,7 +297,13 @@ class QtGUI(QWidget):
     def make_bus_stop_button(self,i):
         button = QPushButton(bus_stop_name[i],self)
         button.resize(600,120)
-        button.setStyleSheet("Text-align:center; font-size:30pt; font : Roman")
+        button.setStyleSheet("Text-align:center;"
+                                "font-size:30pt;" 
+                                "font : Roman;"
+                                "border-radius: 15px; "
+                                "border-style: solid;"
+                                "border-width: 3px;"
+                                "border-color: black")
 
         w = 620
         v = 100
@@ -277,7 +322,14 @@ class QtGUI(QWidget):
         button = QPushButton('이전', self)
         button.resize(280, 80)
         button.move(10, 680)
-        button.setStyleSheet(" font-size:40pt; font : Roman")
+        button.setStyleSheet(   "background-color : white;"
+                                "Text-align:top;" 
+                                "font-size:40pt; "
+                                "font : Roman ; "
+                                "border-radius: 15px; "
+                                "border-style: solid;"
+                                "border-width: 3px;"
+                                "border-color: black")
         self.previous_next_list.append(button)
         button.clicked.connect(lambda : self.click_previous_button())
 
@@ -293,7 +345,14 @@ class QtGUI(QWidget):
         button = QPushButton('다음', self)
         button.resize(280, 80)
         button.move(300, 680)
-        button.setStyleSheet(" font-size:40pt; font : Roman")
+        button.setStyleSheet("background-color : white;"
+                                "Text-align:top;" 
+                                "font-size:40pt; "
+                                "font : Roman ; "
+                                "border-radius: 15px; "
+                                "border-style: solid;"
+                                "border-width: 3px;"
+                                "border-color: black")
         self.previous_next_list.append(button)
         button.clicked.connect(lambda : self.click_next_button())
 
@@ -314,7 +373,15 @@ class QtGUI(QWidget):
         messagebox = TimerMessageBox1(button.text(), 0.5, self)
         messagebox.exec_()
         button.setEnabled(False)
-        button.setStyleSheet("background-image : url(bus_il3.png); Text-align:top; font-size:40pt; font : Roman")
+        button.setStyleSheet("background-image : url(bus_il3.png); "
+                            "background-color : white;"
+                            "Text-align:top;" 
+                            "font-size:40pt; "
+                            "font : Roman ; "
+                            "border-radius: 20px; "
+                            "border-style: solid;"
+                            "border-width: 3px;"
+                            "border-color: red")
 
         for i,number in enumerate(bus_number_array) :
             if number == button.text():
