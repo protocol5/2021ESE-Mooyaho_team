@@ -12,120 +12,7 @@ import threading
 import csv 
 import pymysql
 
-#DB 접속
-db = pymysql.connect(
-    user = 'uosmooyaho',
-    passwd = '!Andigh123',
-    host = "34.64.183.238",
-    database = "bus_info"
-)
 
-
-
-# 버스 정류장 API 인증 key
-bus_stop_key = "YCw62AJ77rUCLVLmI%2BrkReS65%2F5H4XavS%2BIVCLqjeDLq9MaS9v2BkixjD1xgDBvFG%2F6MvUlcmJ44d1PGxruD4A%3D%3D"
-# 버스 도착정보 조회 API 인증 key
-# key = "YCw62AJ77rUCLVLmI%2BrkReS65%2F5H4XavS%2BIVCLqjeDLq9MaS9v2BkixjD1xgDBvFG%2F6MvUlcmJ44d1PGxruD4A%3D%3D"
-key = "gHcpum2l%2Bw3H75tj8jtT%2BsZ7MSiSpkzn1FlH0mpM4meW1yoDcQmtZv0T5XiDOYXqV5kGvwVi5Rdu7p%2FiJBuezg%3D%3D"
-
-
-# 버스 정보 받아오는 부분
-# 버스 정류장 고유의 id 입력
-busstop_id = 105000102
-
-url = "http://ws.bus.go.kr/api/rest/arrive/getLowArrInfoByStId?ServiceKey={}&stId={}".format(key, busstop_id)
-content = requests.get(url).content
-dict = xmltodict.parse(content)
-jsonString = json.dumps(dict['ServiceResult']['msgBody'], ensure_ascii=False)
-jsonObj = json.loads(jsonString)
-
-
-bus = []  # 버스 번호와 도착 예정 시간이 순차적으로 담김
-bus_number_array = []
-num_of_bus = 0
-bus_time_array = []
-#####################################################
-
-# 세마포어
-sem = threading.Semaphore(1)
-
-init_class = 0  # 쓰레드 2에서 처음에만 실행하려고
-
-for i, item in enumerate(jsonObj['itemList']):
-    print(item['rtNm'], item['arrmsg1'])
-
-    bus.append(item['rtNm'])
-    # bus_number_array[i] = item['rtNm']
-    bus_time_array.append(item['arrmsg1'])
-    bus_number_array.append(item['rtNm'])
-
-print('해당 정류장에서 탑승할 수 있는 버스 : ', bus_number_array)
-num_of_bus = len(bus_number_array)
-
-# print('check bus: {} {}'.format(bus[0], bus[1]))
-
-current_page = 0  # 맨 처음 페이지
-BUS_NUMBER = len(bus_number_array)  # 버스의 수
-MAX_PAGE = len(bus_number_array) // 10  # 최대 페이지
-FLAGS = [1] * len(bus_number_array)  # 1이면 버스 버튼을 누를 수 있는 상태
-
-if (len(bus_number_array) % 10 == 0):
-    MAX_PAGE -= 1
-
-# seg fault를 방지하기위해 10단위로 빈칸을 채워넣음
-if MAX_PAGE == 0:
-    while (len(bus_number_array) < 10):
-        bus_number_array.append('')
-
-
-f = open('bus_route_id.csv', 'r', encoding='UTF-8')
-rdr = csv.reader(f)
-bus_id = [] # 해당 정류장에 도착하는 버스의 고유 id가 담길 배열
-for line in rdr :
-    if line[0] in bus:
-        bus_id.append(line[1])
-# print('array', bus_id)
-f.close()
-
-
-
-################### xml 파일을 읽어와서 버스 정류장을 ui에 표시
-bus_stop_id = [] # 버스 정류장의 id, ars, name
-bus_stop_ars = [''] * 5 
-bus_stop_name = [''] * 5
-
-with open('bus_stop.xml') as fd_xml:
-    dict_1 = xmltodict.parse(fd_xml.read())
-    jsonString_1 = json.dumps(dict_1['bus_stop'], ensure_ascii=False)
-    jsonObj_1 = json.loads(jsonString_1)
-
-for i, item in enumerate(jsonObj_1['bus_stop_id']):
-    if item['bus_stop_name'] == str(busstop_id):
-        bus_stop_id.append(item['bus_stop_1'])
-        bus_stop_id.append(item['bus_stop_2'])
-        bus_stop_id.append(item['bus_stop_3'])
-        bus_stop_id.append(item['bus_stop_4'])
-        bus_stop_id.append(item['bus_stop_5'])
-
-read_id_csv = open('bus_stop_id.csv','r',encoding='euc-kr')
-read_id = csv.reader(read_id_csv)
-
-for i, line in enumerate(read_id):
-    if line[0] in bus_stop_id :
-        index = 0
-        for j in range(5):
-            if bus_stop_id[j] == line[0]:
-                index = j
-                bus_stop_ars[index] = line[1]
-                bus_stop_name[index] = line[2]
-                break
-            else :
-                index +=1
-print(bus_stop_id)
-print(bus_stop_ars)
-print(bus_stop_name)
-
-read_id_csv.close()
 
 # 버스 도착 시간을 계속 받아오기 위한 쓰레드
 class Thread1(threading.Thread):
@@ -167,7 +54,17 @@ class QtGUI(QWidget):
         self.setWindowTitle("버스 지유아이")
         self.resize(1280, 800)
 
-        # self.setStyleSheet("background-image : url(back.jpg)")
+        # self.setStyleSheet("background-image : url(back.png)")
+        self.setStyleSheet("background-color : #F0F0F0")
+
+        # oImage = QImage("back.png")
+
+
+        # self.setLayout(oImage)
+
+
+
+
 
         # but_list 배열에는 버튼들이 담긴다.
         self.but_list = []
@@ -179,8 +76,8 @@ class QtGUI(QWidget):
 
 
         # 버스 도착정보 받아오는 쓰레드
-        # thread1 = Thread1()
-        # thread1.start()
+        thread1 = Thread1()
+        thread1.start()
 
         # 버스 관련 버튼 생성
         self.make_previous_button()
@@ -255,7 +152,7 @@ class QtGUI(QWidget):
                             "font-size:40pt; "
                             "font : Roman ; "
                             "border-radius: 15px; "
-                            "border-style: solid;"
+                            "border-style: solid;" # dashed, outset
                             "border-width: 3px;"
                             "border-color: blue")
                              
@@ -298,6 +195,7 @@ class QtGUI(QWidget):
         button = QPushButton(bus_stop_name[i],self)
         button.resize(600,120)
         button.setStyleSheet("Text-align:center;"
+                                "background-color : white;"
                                 "font-size:30pt;" 
                                 "font : Roman;"
                                 "border-radius: 15px; "
@@ -456,7 +354,6 @@ class QtGUI(QWidget):
                             bus_times[j] = item['arrmsg1']
                             bus_times[j+1] = item['rtNm']
                         
-            # print('bus_times = ', bus_times)
 
             self.calculate_fast_bus(bus_times)
 
@@ -475,6 +372,8 @@ class QtGUI(QWidget):
             elif data == '운행종료' :
                 bus_only_time[i] = 100
             elif data =='출발대기' :
+                bus_only_time[i] = 99
+            elif data == '차고지 출발' :
                 bus_only_time[i] = 99
             else :
                 bus_only_time[i] = int(data.split('분')[0])
@@ -514,21 +413,27 @@ class QtGUI(QWidget):
         #bus_route_id = 1010 ###################이 부분을 바꾸어야합니다.
 
         if flag == 1 :
-            cursor = db.cursor(pymysql.cursors.DictCursor)
-            sql = '''UPDATE bus_info 
-                SET stop_sig = '1'
-                WHERE bus_uid=%s AND stop_sig = '0';'''
-            cursor.execute(sql,(bus_route_id))
-            db.commit()
+            try :
+                cursor = db.cursor(pymysql.cursors.DictCursor)
+                sql = '''UPDATE bus_info 
+                    SET stop_sig = '1'
+                    WHERE bus_uid=%s AND stop_sig = '0';'''
+                cursor.execute(sql,(bus_route_id))
+                db.commit()
+            except :
+                print("DB access error\n")
 
         # 승하차 신호를 0으로 바꿈
         elif flag == 0 :
-            cursor = db.cursor(pymysql.cursors.DictCursor)
-            sql = '''UPDATE bus_info 
-                SET stop_sig = '0'
-                WHERE bus_uid=%s AND stop_sig = '1';'''
-            cursor.execute(sql,(bus_route_id))
-            db.commit()
+            try :
+                cursor = db.cursor(pymysql.cursors.DictCursor)
+                sql = '''UPDATE bus_info 
+                    SET stop_sig = '0'
+                    WHERE bus_uid=%s AND stop_sig = '1';'''
+                cursor.execute(sql,(bus_route_id))
+                db.commit()
+            except :
+                print("DB access error\n")
 
 # 버스 번호 클릭시 팝업 생성 후 자동으로 닫히는 코드
 class TimerMessageBox1(QMessageBox):
@@ -538,7 +443,7 @@ class TimerMessageBox1(QMessageBox):
         self.bus_number = bus_number
         self.time_to_wait = timeout
         self.setText("{}번 버스가 선택되었습니다 ".format(self.bus_number))
-        self.setStyleSheet(" Text-align:center; font-size:20pt; font : Roman")
+        self.setStyleSheet(" Text-align:center; font-size:20pt; font : Roman; ")
         self.setStandardButtons(QMessageBox.NoButton)
         self.timer = QTimer(self)
         self.timer.setInterval(1000)
@@ -568,7 +473,7 @@ class TimerMessageBox2(QMessageBox):
         self.bus_stop = bus_stop
         self.time_to_wait = timeout
         self.setText("{} 번을 탑승하시면 됩니다 ".format(self.bus_stop))
-        self.setStyleSheet(" Text-align:center; font-size:20pt; font : Roman")
+        self.setStyleSheet(" Text-align:center; font-size:20pt; font : Roman; background-color : white")
         self.setStandardButtons(QMessageBox.NoButton)
         self.timer = QTimer(self)
         self.timer.setInterval(1000)
@@ -598,7 +503,7 @@ class TimerMessageBox3(QMessageBox):
         
         self.time_to_wait = timeout
         self.setText("탑승할 수 있는 버스가 없습니다.")
-        self.setStyleSheet(" Text-align:center; font-size:20pt; font : Roman")
+        self.setStyleSheet(" Text-align:center; font-size:20pt; font : Roman ; background-color : white")
         self.setStandardButtons(QMessageBox.NoButton)
         self.timer = QTimer(self)
         self.timer.setInterval(1000)
@@ -619,6 +524,116 @@ class TimerMessageBox3(QMessageBox):
         event.accept()
 
 if __name__ == '__main__':
+
+    #DB 
+    db = pymysql.connect(
+        user = 'uosmooyaho',
+        passwd = '!Andigh123',
+        host = "34.64.183.238",
+        database = "bus_info"
+    )
+
+    # 버스 정류장 API 인증 key
+    bus_stop_key = "YCw62AJ77rUCLVLmI%2BrkReS65%2F5H4XavS%2BIVCLqjeDLq9MaS9v2BkixjD1xgDBvFG%2F6MvUlcmJ44d1PGxruD4A%3D%3D"
+    # 버스 도착정보 조회 API 인증 key
+    # key = "YCw62AJ77rUCLVLmI%2BrkReS65%2F5H4XavS%2BIVCLqjeDLq9MaS9v2BkixjD1xgDBvFG%2F6MvUlcmJ44d1PGxruD4A%3D%3D"
+    key = "gHcpum2l%2Bw3H75tj8jtT%2BsZ7MSiSpkzn1FlH0mpM4meW1yoDcQmtZv0T5XiDOYXqV5kGvwVi5Rdu7p%2FiJBuezg%3D%3D"
+
+    busstop_id = 105000102
+
+    url = "http://ws.bus.go.kr/api/rest/arrive/getLowArrInfoByStId?ServiceKey={}&stId={}".format(key, busstop_id)
+    try :
+        content = requests.get(url).content
+        dict = xmltodict.parse(content)
+        jsonString = json.dumps(dict['ServiceResult']['msgBody'], ensure_ascii=False)
+        jsonObj = json.loads(jsonString)
+    except :
+        print("DB access Error\n")
+
+    
+    bus = []  # 버스 번호와 도착 예정 시간이 순차적으로 담김
+    bus_number_array = []
+    num_of_bus = 0
+    bus_time_array = []
+
+    # semaphore
+    sem = threading.Semaphore(1)
+
+    for i, item in enumerate(jsonObj['itemList']):
+        print(item['rtNm'], item['arrmsg1'])
+
+        bus.append(item['rtNm'])
+        # bus_number_array[i] = item['rtNm']
+        bus_time_array.append(item['arrmsg1'])
+        bus_number_array.append(item['rtNm'])
+
+    print('해당 정류장에서 탑승할 수 있는 버스 : ', bus_number_array)
+    num_of_bus = len(bus_number_array)
+
+    # print('check bus: {} {}'.format(bus[0], bus[1]))
+
+    current_page = 0  # 맨 처음 페이지
+    BUS_NUMBER = len(bus_number_array)  # 버스의 수
+    MAX_PAGE = len(bus_number_array) // 10  # 최대 페이지
+    FLAGS = [1] * len(bus_number_array)  # 1이면 버스 버튼을 누를 수 있는 상태
+
+    if (len(bus_number_array) % 10 == 0):
+        MAX_PAGE -= 1
+
+    # seg fault를 방지하기위해 10단위로 빈칸을 채워넣음
+    if MAX_PAGE == 0:
+        while (len(bus_number_array) < 10):
+            bus_number_array.append('')
+
+
+    f = open('bus_route_id.csv', 'r', encoding='UTF-8')
+    rdr = csv.reader(f)
+    bus_id = [] # 해당 정류장에 도착하는 버스의 고유 id가 담길 배열
+    for line in rdr :
+        if line[0] in bus:
+            bus_id.append(line[1])
+    # print('array', bus_id)
+    f.close()
+
+
+
+    ################### xml 파일을 읽어와서 버스 정류장을 ui에 표시
+    bus_stop_id = [] # 버스 정류장의 id, ars, name
+    bus_stop_ars = [''] * 5 
+    bus_stop_name = [''] * 5
+
+    with open('bus_stop.xml') as fd_xml:
+        dict_1 = xmltodict.parse(fd_xml.read())
+        jsonString_1 = json.dumps(dict_1['bus_stop'], ensure_ascii=False)
+        jsonObj_1 = json.loads(jsonString_1)
+
+    for i, item in enumerate(jsonObj_1['bus_stop_id']):
+        if item['bus_stop_name'] == str(busstop_id):
+            bus_stop_id.append(item['bus_stop_1'])
+            bus_stop_id.append(item['bus_stop_2'])
+            bus_stop_id.append(item['bus_stop_3'])
+            bus_stop_id.append(item['bus_stop_4'])
+            bus_stop_id.append(item['bus_stop_5'])
+
+    read_id_csv = open('bus_stop_id.csv','r',encoding='euc-kr')
+    read_id = csv.reader(read_id_csv)
+
+    for i, line in enumerate(read_id):
+        if line[0] in bus_stop_id :
+            index = 0
+            for j in range(5):
+                if bus_stop_id[j] == line[0]:
+                    index = j
+                    bus_stop_ars[index] = line[1]
+                    bus_stop_name[index] = line[2]
+                    break
+                else :
+                    index +=1
+    print(bus_stop_id)
+    print(bus_stop_ars)
+    print(bus_stop_name)
+
+    read_id_csv.close()
     app = QApplication(sys.argv)
 
     ex = QtGUI()
