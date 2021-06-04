@@ -31,7 +31,7 @@ class Thread1(threading.Thread):
                     print(bus[i]+'번 버스가 정류장을 통과했습니다')
                 if (bus_time_array[i] == '운행종료') :
                     sem.acquire()
-                    FLAGS[i] = 0
+                    FLAGS[i] = -1
                     sem.release()
                 #버스가 정류장에 도착했다가 떠났을 때. 
                 if (FLAGS[i] == 0 and bus_time_array[i] != item['arrmsg1'] and bus_time_array[i]=='곧 도착' ) :
@@ -53,6 +53,7 @@ class QtGUI(QWidget):
         super().__init__()
         self.setWindowTitle("버스 지유아이")
         self.resize(1280, 800)
+        self.setCursor(Qt.BlankCursor)
 
         # self.setStyleSheet("background-image : url(back.png)")
         self.setStyleSheet("background-color : #F0F0F0")
@@ -61,9 +62,6 @@ class QtGUI(QWidget):
 
 
         # self.setLayout(oImage)
-
-
-
 
 
         # but_list 배열에는 버튼들이 담긴다.
@@ -92,7 +90,7 @@ class QtGUI(QWidget):
 
         # refresh.py 에서 따온 것
         self.time = QTimer(self)
-        self.time.setInterval(1000)
+        self.time.setInterval(200)
         self.time.timeout.connect(self.Refresh)
 
         self.time.start()
@@ -133,7 +131,31 @@ class QtGUI(QWidget):
                                             "border-width: 3px;"
                                             "border-color: red")
                 # print(self.but_list[i].isEnabled())
-                self.but_list[i].setEnabled(False)
+                #self.but_list[i].setEnabled(False)
+
+                #사용자가 취소버튼을 눌렀을 때
+            elif FLAGS[i] == 1 :
+                self.but_list[i].setStyleSheet("background-image : url(bus_il4.png); "
+                                            "background-color : white;"
+                                            "Text-align:top;" 
+                                            "font-size:40pt; "
+                                            "font : Roman ; "
+                                            "border-radius: 15px; "
+                                            "border-style: solid;"
+                                            "border-width: 3px;"
+                                            "border-color: blue")
+                # print(self.but_list[i].isEnabled())
+                #self.but_list[i].setEnabled(False)
+            elif FLAGS[i] == -1 :
+                self.but_list[i].setStyleSheet("background-image : url(bus_il3.png); "
+                                            "background-color : white;"
+                                            "Text-align:top;" 
+                                            "font-size:40pt; "
+                                            "font : Roman ; "
+                                            "border-radius: 15px; "
+                                            "border-style: solid;"
+                                            "border-width: 3px;"
+                                            "border-color: blue")
             sem.release()
 
 
@@ -268,30 +290,47 @@ class QtGUI(QWidget):
         print('Bus number', button.text(), 'is pushed!!')
         
         # 팝업 메세지 박스
-        messagebox = TimerMessageBox1(button.text(), 0.5, self)
-        messagebox.exec_()
-        button.setEnabled(False)
-        button.setStyleSheet("background-image : url(bus_il3.png); "
-                            "background-color : white;"
-                            "Text-align:top;" 
-                            "font-size:40pt; "
-                            "font : Roman ; "
-                            "border-radius: 20px; "
-                            "border-style: solid;"
-                            "border-width: 3px;"
-                            "border-color: red")
+
+        #button.setEnabled(False)
+        # button.setStyleSheet("background-image : url(bus_il3.png); "
+        #                     "background-color : white;"
+        #                     "Text-align:top;" 
+        #                     "font-size:40pt; "
+        #                     "font : Roman ; "
+        #                     "border-radius: 20px; "
+        #                     "border-style: solid;"
+        #                     "border-width: 3px;"
+        #                     "border-color: red")
 
         for i,number in enumerate(bus_number_array) :
-            if number == button.text():
+            if number == button.text() and FLAGS[i] == 1:
                 # print(type(number), type(button.text()))
+                
                 sem.acquire()
                 FLAGS[i] = 0
                 sem.release()
                 print('버스번호 {}는 선택할 수 없습니다.'.format(button.text()))
+                messagebox = TimerMessageBox1(button.text(), 0.5, 1 , self)
+                messagebox.exec_()
+                self.connect_db(button.text(), 1)
+                break
+            #버튼 취소
+            elif number == button.text() and FLAGS[i] == 0:        
+                sem.acquire()
+                FLAGS[i] = 1
+                sem.release()
+                print('버스번호 {}는 사용자가 취소를 했습니다.'.format(button.text()))
+                messagebox = TimerMessageBox1(button.text(), 0.5, 0 , self)
+                messagebox.exec_()
+                self.connect_db(button.text(), 0)
+                break
+            elif number == button.text() and FLAGS[i] == -1:        
+                print('버스번호 {}는 운행종료된 버스입니다.'.format(button.text()))
+                messagebox = TimerMessageBox1(button.text(), 0.5, -1 , self)
+                messagebox.exec_()
                 break
 
-
-        self.connect_db(button.text(), 1)
+        
         
     # def refresh_button(self, button):
     #     # for i in self.but_list:
@@ -437,13 +476,24 @@ class QtGUI(QWidget):
 
 # 버스 번호 클릭시 팝업 생성 후 자동으로 닫히는 코드
 class TimerMessageBox1(QMessageBox):
-    def __init__(self, bus_number ,timeout=3, parent=None):
+    def __init__(self, bus_number ,timeout=3, bus_sig = 0 ,parent=None):
         super(TimerMessageBox1, self).__init__(parent)
-        self.setWindowTitle("버스 선택 팝업")
         self.bus_number = bus_number
         self.time_to_wait = timeout
-        self.setText("{}번 버스가 선택되었습니다 ".format(self.bus_number))
-        self.setStyleSheet(" Text-align:center; font-size:20pt; font : Roman; ")
+        self.bus_stop_sig = bus_sig
+        if self.bus_stop_sig == 1 :
+            self.setWindowTitle("버스 선택 팝업")
+            self.setText("{}번 버스가 선택되었습니다 ".format(self.bus_number))
+            self.setStyleSheet(" Text-align:center; font-size:20pt; font : Roman; ")
+        elif self.bus_stop_sig == 0 :
+            self.setWindowTitle("버스 취소 팝업")
+            self.setText("{}번 버스가 취소되었습니다 ".format(self.bus_number))
+            self.setStyleSheet(" Text-align:center; font-size:20pt; font : Roman; ")
+        elif self.bus_stop_sig == -1 :
+            self.setWindowTitle("운행 종료 팝업")
+            self.setText("{}번 버스는 운행이 종료되었습니다 ".format(self.bus_number))
+            self.setStyleSheet(" Text-align:center; font-size:20pt; font : Roman; ")
+
         self.setStandardButtons(QMessageBox.NoButton)
         self.timer = QTimer(self)
         self.timer.setInterval(1000)
@@ -452,7 +502,12 @@ class TimerMessageBox1(QMessageBox):
 
     def changeContent(self):
         #self.setText("wait (closing automatically in {0} secondes.)".format(self.time_to_wait))
-        self.setText("{}번 버스가 선택되었습니다 ".format(self.bus_number))
+        if self.bus_stop_sig == 1 :
+            self.setText("{}번 버스가 선택되었습니다 ".format(self.bus_number))
+        elif self.bus_stop_sig == 0 :
+            self.setText("{}번 버스가 취소되었습니다 ".format(self.bus_number))
+        elif self.bus_stop_sig == 0 :
+            self.setText("{}번 버스는 운행이 종료되었습니다 ".format(self.bus_number))
         self.time_to_wait
         self.time_to_wait -= 1
         if self.time_to_wait <= 0:
