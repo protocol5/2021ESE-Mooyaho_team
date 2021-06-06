@@ -95,7 +95,18 @@ def connect_GCP():
         host = '34.64.183.238'
         username = 'moyahoo'
         ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(host, username=username, key_filename='/home/myh/Desktop/myh_keyfile.pem')
+        sftp = ssh.open_sftp()
+        filename = 'fall_detected.jpg'
+        os.chdir(r"/home/myh/2021ESE-Mooyaho_team/darknet/")
+        with open(filename, 'rb') as contents:
+            sftp.chdir('/home/moyahoo/fall_detection')
+            sftp.put('/home/myh/2021ESE-Mooyaho_team/darknet/fall_detected.jpg', bus_id+'.jpg')
+            contents.close()
+        sftp.close()
+        ssh.close()
+        print("connect success")
     except:
         print("Failed connecting to GCP! Check the host ip is correct or keyfile is exist!")
         return False
@@ -242,38 +253,11 @@ if __name__ == "__main__":
             time.sleep(1)
 
             # connect GCP with ssh
-            host = '34.64.183.238'
-            username = 'moyahoo'
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            # need to modify keyfilename@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-            ssh.connect(host, username=username, key_filename='/home/myh/Desktop/myh_keyfile.pem')
-            #########################################################
-
-            # sftp open
-            sftp = ssh.open_sftp()
-            print("connect success")
-
-            # file upload
-            filename = 'fall_detected.jpg'
-            os.chdir(r"/home/myh/2021ESE-Mooyaho_team/darknet/")
-            with open(filename, 'rb') as contents:
-                sftp.chdir('/home/moyahoo/fall_detection')
-                sftp.put('/home/myh/2021ESE-Mooyaho_team/darknet/fall_detected.jpg', bus_id+'.jpg')
-                contents.close()
-            sftp.close()
-            ssh.close()
+            connect_GCP()
         
 
             # db 정보 및 연결
-            mydb = pymysql.connect(
-                user='uosmooyaho', 
-                passwd='!Andigh123', 
-                host='34.64.183.238', 
-                db='bus_info'
-            )
-
-            # 커서 객체 생성
+            mydb = db_connect()
             cursor = mydb.cursor(pymysql.cursors.DictCursor)
 
             # fall_sig 수정하기 (if fastest bus_id is changed, the past bus's fall sig is dropped by 0)

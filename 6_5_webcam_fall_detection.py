@@ -169,7 +169,7 @@ def draw_boxes(detections, image, colors):
         #     fall = 0
 
         
-        if lost_fall > 20:
+        if lost_fall > 40:
             fall = 0
             lost_fall = 0
         print('lost : ', lost_fall)
