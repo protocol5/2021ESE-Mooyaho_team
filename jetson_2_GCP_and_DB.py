@@ -57,8 +57,8 @@ def find_soon(jsonObj):
 # 버스의 도착 시간 중 가장 빠른 시간을 찾기
 def find_fast_arr(jsonObj):
     for i, item in enumerate(jsonObj['itemList']):
-        # 첫 번째 시간을 받은 상태라면
-        if '운행' in item['arrmsg1'] or '막차' in item['arrmsg1']:
+        # 첫 번째 시간을 받은 상태라면 (except what is not time)
+        if '운행' in item['arrmsg1'] or '막차' in item['arrmsg1'] or '차고' in item['arrmsg1'] or '출발' in item['arrmsg1']:
                 item['arrmsg1'] = '100분'
         if i == 0:
             arr_time = item['arrmsg1']
@@ -205,7 +205,8 @@ past_bus_id = 0
 if __name__ == "__main__":
     # image file path and url and busstop id
     img_file = '/home/myh/2021ESE-Mooyaho_team/darknet/fall_detected.jpg'
-    busstop_id = 105000102
+    #busstop_id = 105000102
+    busstop_id = 105000103
     url = "http://ws.bus.go.kr/api/rest/arrive/getLowArrInfoByStId?ServiceKey={}&stId={}".format(key, busstop_id)
 
     # get modified time of image first
