@@ -56,7 +56,7 @@ class QtGUI(QWidget):
         self.setCursor(Qt.BlankCursor)
 
         # self.setStyleSheet("background-image : url(back.png)")
-        self.setStyleSheet("background-color : #F0F0F0")
+        self.setStyleSheet("background-color : white")
 
         # oImage = QImage("back.png")
 
@@ -106,7 +106,7 @@ class QtGUI(QWidget):
         for i in range(num_of_bus):
             sem.acquire()
             if FLAGS[i] == 2 :
-                self.but_list[i].setStyleSheet("background-image : url(bus_il4.png);"
+                self.but_list[i].setStyleSheet("background-image : url(pop_button.png);"
                                 "background-color : white;"
                                 "Text-align:top;" 
                                 "font-size:40pt; "
@@ -121,41 +121,42 @@ class QtGUI(QWidget):
                 self.connect_db(bus_number_array[i] ,0)
 
             elif FLAGS[i] == 0 :
-                self.but_list[i].setStyleSheet("background-image : url(bus_il3.png); "
+                self.but_list[i].setStyleSheet("background-image : url(push_button.png); "
                                             "background-color : white;"
-                                            "Text-align:top;" 
+                                            "color: white;"
                                             "font-size:40pt; "
-                                            "font : Roman ; "
+                                            "font : bold ;"
                                             "border-radius: 15px; "
                                             "border-style: solid;"
-                                            "border-width: 3px;"
-                                            "border-color: red")
+                                            "border-width: 2px;"
+                                            "border-color: white")
                 # print(self.but_list[i].isEnabled())
                 #self.but_list[i].setEnabled(False)
 
                 #사용자가 취소버튼을 눌렀을 때
             elif FLAGS[i] == 1 :
-                self.but_list[i].setStyleSheet("background-image : url(bus_il4.png); "
+                self.but_list[i].setStyleSheet("background-image : url(pop_button.png); "
                                             "background-color : white;"
-                                            "Text-align:top;" 
+                                            "color: white;"
+                                            "font: bold Roman ;"
                                             "font-size:40pt; "
-                                            "font : Roman ; "
+                                            # "font : Roman  ;"
                                             "border-radius: 15px; "
                                             "border-style: solid;"
-                                            "border-width: 3px;"
-                                            "border-color: blue")
+                                            "border-width: 2px;"
+                                            "border-color: white")
                 # print(self.but_list[i].isEnabled())
                 #self.but_list[i].setEnabled(False)
             elif FLAGS[i] == -1 :
-                self.but_list[i].setStyleSheet("background-image : url(bus_il3.png); "
+                self.but_list[i].setStyleSheet("background-image : url(end_button.png); "
                                             "background-color : white;"
-                                            "Text-align:top;" 
+                                            "color: black;"
                                             "font-size:40pt; "
-                                            "font : Roman ; "
+                                            "font : Roman  ;"
                                             "border-radius: 15px; "
                                             "border-style: solid;"
-                                            "border-width: 3px;"
-                                            "border-color: blue")
+                                            "border-width: 2px;"
+                                            "border-color: white")
             sem.release()
 
 
@@ -168,15 +169,15 @@ class QtGUI(QWidget):
         button = QPushButton(str(bus_number), self)
         # button.setEnabled(True)
         button.resize(280, 120)
-        button.setStyleSheet("background-image : url(bus_il4.png); "
-                            "background-color : white;"
-                            "Text-align:top;" 
-                            "font-size:40pt; "
-                            "font : Roman ; "
-                            "border-radius: 15px; "
-                            "border-style: solid;" # dashed, outset
-                            "border-width: 3px;"
-                            "border-color: blue")
+        button.setStyleSheet("background-image : url(pop_button.png); "
+                                            "background-color : white;"
+                                            "color: black;"
+                                            "font-size:40pt; "
+                                            "font : Roman  ;"
+                                            "border-radius: 15px; "
+                                            "border-style: solid;"
+                                            "border-width: 2px;"
+                                            "border-color: white")
                              
                              
 
@@ -198,15 +199,15 @@ class QtGUI(QWidget):
 
         if button.text() == '':
             button.setEnabled(False)
-            button.setStyleSheet("background-image : url(bus_il3.png);"
-                                "background-color : white;"
-                                "Text-align:top;" 
-                                "font-size:40pt; "
-                                "font : Roman ; "
-                                "border-radius: 15px; "
-                                "border-style: solid;"
-                                "border-width: 3px;"
-                                "border-color: red")
+            button.setStyleSheet("background-image : url(push_button.png); "
+                                            "background-color : white;"
+                                            "color: black;"
+                                            "font-size:40pt; "
+                                            "font : Roman  ;"
+                                            "border-radius: 15px; "
+                                            "border-style: solid;"
+                                            "border-width: 2px;"
+                                            "border-color: white")
             # button.push
 
         button.clicked.connect(lambda: self.click_bus_num(button))
@@ -217,14 +218,15 @@ class QtGUI(QWidget):
         button = QPushButton(bus_stop_name[i],self)
         button.resize(600,120)
         button.setStyleSheet("Text-align:center;"
-                                "background-color : white;"
-                                "font-size:30pt;" 
-                                "font : Roman;"
+                                "background-image : url(bus_stop_list.png);"
+                                # "background-color : white;"
+                                "font-size:28pt;" 
+                                "font : Roman bold;"
                                 "border-radius: 15px; "
-                                "border-style: solid;"
-                                "border-width: 3px;"
-                                "border-color: black")
-
+                                "border-width: 50px;"
+                                "border-color: white")
+                                # "border-style: solid;"
+                          
         w = 620
         v = 100
         v = i * 140 + 50
@@ -594,7 +596,7 @@ if __name__ == '__main__':
     # key = "YCw62AJ77rUCLVLmI%2BrkReS65%2F5H4XavS%2BIVCLqjeDLq9MaS9v2BkixjD1xgDBvFG%2F6MvUlcmJ44d1PGxruD4A%3D%3D"
     key = "gHcpum2l%2Bw3H75tj8jtT%2BsZ7MSiSpkzn1FlH0mpM4meW1yoDcQmtZv0T5XiDOYXqV5kGvwVi5Rdu7p%2FiJBuezg%3D%3D"
 
-    busstop_id = 105000102
+    busstop_id = 105000103
 
     url = "http://ws.bus.go.kr/api/rest/arrive/getLowArrInfoByStId?ServiceKey={}&stId={}".format(key, busstop_id)
     try :
