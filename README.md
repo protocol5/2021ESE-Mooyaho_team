@@ -15,6 +15,12 @@
 
 
 
+설문조사 및 피드백을 참고한 수정사항
+- 버스 버튼 클릭 시 음성이 출력되도록 수정
+- 버튼 클릭 및 클릭되지 않은 것을 한눈에 알아볼 수 있도록 수정
+![0618](https://user-images.githubusercontent.com/68097144/122436974-3ab6b180-cfd4-11eb-96d1-9cd270b08cd0.png)
+
+
 
 #### csv 파일, xml 파일
   - bus_routd_id.csv는 버스의 번호와 그에 맞는 고유의 id가 저장
