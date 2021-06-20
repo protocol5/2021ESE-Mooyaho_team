@@ -12,6 +12,7 @@ import threading
 import csv 
 import pymysql
 from playsound import playsound 
+import os
 
 
 # 버스 도착 시간을 계속 받아오기 위한 쓰레드
@@ -78,8 +79,8 @@ class QtGUI(QWidget):
 
         # 버스 도착정보 받아오는 쓰레드
 
-        # thread1 = Thread1()
-        # thread1.start()
+        thread1 = Thread1()
+        thread1.start()
 
         # 버스 관련 버튼 생성
         #self.make_previous_button()
@@ -95,7 +96,7 @@ class QtGUI(QWidget):
 
         # refresh.py 에서 따온 것
         self.time = QTimer(self)
-        self.time.setInterval(100)
+        self.time.setInterval(200)
         self.time.timeout.connect(self.Refresh)
 
         self.time.start()
@@ -340,9 +341,10 @@ class QtGUI(QWidget):
                 sem.release()
                 print('버스번호 {}는 선택할 수 없습니다.'.format(button.text()))
                 self.connect_db(button.text(), 1)
+                os.system('mpg321 ./bus_click_voice.mp3 &')
                 messagebox = TimerMessageBox1(button.text(), 2, 1 , self)
                 messagebox.exec_()
-                playsound("./bus_click_voice.mp3")
+                #playsound("./bus_click_voice.mp3")
                 break
             #버튼 취소
             elif number == button.text() and FLAGS[i] == 0:        
@@ -351,15 +353,17 @@ class QtGUI(QWidget):
                 sem.release()
                 print('버스번호 {}는 사용자가 취소를 했습니다.'.format(button.text()))
                 self.connect_db(button.text(), 0)
+                os.system('mpg321 ./bus_cancel_voice.mp3 &')
                 messagebox = TimerMessageBox1(button.text(), 2, 0 , self)
                 messagebox.exec_()       
-                playsound("./bus_cancel_voice.mp3")
+                #playsound("./bus_cancel_voice.mp3")
                 break
             elif number == button.text() and FLAGS[i] == -1:        
                 print('버스번호 {}는 운행종료된 버스입니다.'.format(button.text()))
                 messagebox = TimerMessageBox1(button.text(), 2, -1 , self)
                 messagebox.exec_()
-                playsound("./bus_end_voice.mp3")
+                # playsound("./bus_end_voice.mp3")
+                os.system('mpg321 ./bus_end_voice.mp3 &')
                 break
         
         
@@ -463,8 +467,9 @@ class QtGUI(QWidget):
                     messagebox = TimerMessageBox2(bus_times[min_index*2+1], 1 , self)
                     messagebox.exec_()
 
-        self.connect_db(bus_times[min_index*2+1] , 1)
-        playsound("./bus_click_voice.mp3")
+            self.connect_db(bus_times[min_index*2+1] , 1)
+            # playsound("./bus_click_voice.mp3")
+            os.system('mpg321 ./bus_click_voice.mp3 &')
 
         # 경우의 수 눌려있지 않다. -> 플래그 내리고 누르면 됨 -> 탑승할 버스 넘버 팝업
         # 눌려있다 -> 탑승할 버스 넘버 팝업
