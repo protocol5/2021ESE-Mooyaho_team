@@ -97,7 +97,10 @@ def prepare_batch(images, network, channels=3):
     return darknet.IMAGE(width, height, channels, darknet_images)
 
 
-
+# global variable for recognition of fall-detection occur
+fall = 0
+past_fall = 0
+lost_fall = 0
 def image_detection(image_path, network, class_names, class_colors, thresh):
     # Darknet doesn't accept numpy images.
     # Create one with image we reuse for each detect
@@ -106,7 +109,10 @@ def image_detection(image_path, network, class_names, class_colors, thresh):
     darknet_image = darknet.make_image(width, height, 3)
 
     #image = cv2.imread(image_path)
-    ret, image = cap.read()			# capture image!!!
+    if cam_count == 0:
+        ret, image = cap.read()			# capture image!!!
+    else:
+        ret, image = cap2.read()
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image_resized = cv2.resize(image_rgb, (width, height),
                                interpolation=cv2.INTER_LINEAR)
@@ -115,10 +121,13 @@ def image_detection(image_path, network, class_names, class_colors, thresh):
     detections = darknet.detect_image(network, class_names, darknet_image, thresh=thresh)
     darknet.free_image(darknet_image)
     image = draw_boxes(detections, image_resized, class_colors)
+    global fall
+    # if there is not any detections, make fall = 0
+    if len(detections) == 0:
+        fall = 0
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 
-# global variable for recognition of fall-detection occur
-fall = 0
+
 ############################################
 ######### draw_boxes for fall-detection ####
 ############################################
@@ -133,6 +142,8 @@ def draw_boxes(detections, image, colors):
             person_height = bottom - top
 
             global fall
+            global past_fall
+            global lost_fall
             # if width / height is more than 1.1
             if person_width/person_height > 1.1:
                 cv2.rectangle(image, (left, top), (right, bottom), (255, 0, 0), 1)
@@ -141,13 +152,30 @@ def draw_boxes(detections, image, colors):
                             (255, 0, 0), 2)
                 # when fall-detection is keep occuring, global variable fall is keep growing
                 fall += 1
+                
+                # renewal fall
+                past_fall = fall
             else:
                 cv2.rectangle(image, (left, top), (right, bottom), colors[label], 1)
                 cv2.putText(image, "{} [{:.2f}]".format(label, float(confidence)),
                             (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                             colors[label], 2)
+                # compare past_fall and fall
+                if past_fall == fall:
+                    lost_fall += 1
                 # when fall-detection is not detected, global variable fall will be reset to 0
-                fall = 0
+                # fall = 0
+        # else :
+        #     fall = 0
+
+        
+        if lost_fall > 40:
+            fall = 0
+            lost_fall = 0
+        print('lost : ', lost_fall)
+
+
+
 
             
     return image
@@ -197,7 +225,7 @@ def batch_detection(network, images, class_names, class_colors,
     return images, batch_predictions
 
 
-def image_classification(image, network, class_names):
+def image_classification(image, network, fallclass_names):
     width = darknet.network_width(network)
     height = darknet.network_height(network)
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -255,6 +283,8 @@ def batch_detection_example():
 def main():
     args = parser()
     check_arguments_errors(args)
+    
+    global fall
 
     random.seed(3)  # deterministic bbox colors
     network, class_names, class_colors = darknet.load_network(
@@ -269,7 +299,8 @@ def main():
     index = 0
 
 	# create capture
-    
+    global cam_count
+    cam_count = 0
     while True:
         # loop asking for new image paths if no list is given
         #if args.input:
@@ -292,13 +323,18 @@ def main():
             # variable fall is a count number how long does fall-detection continue
             print("\n%d" %(fall))
             # save image when fall is more than 10
-            if fall > 10:
+            if fall >= 5:
                 cv2.imwrite("./fall_detected.jpg", image)
+                fall = 0
 
             cv2.imshow('Inference', image)
             if cv2.waitKey(1) != -1:
                 break
         index += 1
+        if cam_count == 0:
+            cam_count = 1
+        else:
+            cam_count = 0
     cap.release()
     cv2.destroyAllWindows()
 
@@ -307,4 +343,6 @@ if __name__ == "__main__":
     # unconmment next line for an example of batch processing
     # batch_detection_example()
     cap = cv2.VideoCapture(0)
+    cap2 = cv2.VideoCapture(1)
+    ret, img = cap2.read()
     main()
