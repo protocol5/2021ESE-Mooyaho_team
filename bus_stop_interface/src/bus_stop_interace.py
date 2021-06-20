@@ -341,7 +341,7 @@ class QtGUI(QWidget):
                 sem.release()
                 print('버스번호 {}는 선택할 수 없습니다.'.format(button.text()))
                 self.connect_db(button.text(), 1)
-                os.system('mpg321 ./voice_files/bus_click_voice.mp3 &')
+                os.system('mpg321 bus_click_voice.mp3 &')
                 messagebox = TimerMessageBox1(button.text(), 2, 1 , self)
                 messagebox.exec_()
                 #playsound("./bus_click_voice.mp3")
@@ -353,7 +353,7 @@ class QtGUI(QWidget):
                 sem.release()
                 print('버스번호 {}는 사용자가 취소를 했습니다.'.format(button.text()))
                 self.connect_db(button.text(), 0)
-                os.system('mpg321 ./voice_files/bus_cancel_voice.mp3 &')
+                os.system('mpg321 bus_cancel_voice.mp3 &')
                 messagebox = TimerMessageBox1(button.text(), 2, 0 , self)
                 messagebox.exec_()       
                 #playsound("./bus_cancel_voice.mp3")
@@ -363,7 +363,7 @@ class QtGUI(QWidget):
                 messagebox = TimerMessageBox1(button.text(), 2, -1 , self)
                 messagebox.exec_()
                 # playsound("./bus_end_voice.mp3")
-                os.system('mpg321 ./voice_files/bus_end_voice.mp3 &')
+                os.system('mpg321 bus_end_voice.mp3 &')
                 break
         
         
@@ -469,7 +469,7 @@ class QtGUI(QWidget):
 
             self.connect_db(bus_times[min_index*2+1] , 1)
             # playsound("./bus_click_voice.mp3")
-            os.system('mpg321 ./voice_files/bus_click_voice.mp3 &')
+            os.system('mpg321 bus_click_voice.mp3 &')
 
         # 경우의 수 눌려있지 않다. -> 플래그 내리고 누르면 됨 -> 탑승할 버스 넘버 팝업
         # 눌려있다 -> 탑승할 버스 넘버 팝업
