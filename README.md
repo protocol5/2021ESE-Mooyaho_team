@@ -16,14 +16,21 @@
 
 
 설문조사 및 피드백을 참고한 수정사항
-- 버스 버튼 클릭 시 음성이 출력되도록 수정
+- 버스 버튼 클릭 시 음성이 출력되도록 수정(버스 버튼 클릭 시, 버스 취소 시, 운행종료 버스 선택 시)
 - 버튼 클릭 및 클릭되지 않은 것을 한눈에 알아볼 수 있도록 수정
-- UI의 위쪽에 도움말 
+- UI의 위쪽에 도움말 추가
 ![0618](https://user-images.githubusercontent.com/68097144/122436974-3ab6b180-cfd4-11eb-96d1-9cd270b08cd0.png)
 
-
-
-#### csv 파일, xml 파일
+#### csv, xml files
   - bus_routd_id.csv는 버스의 번호와 그에 맞는 고유의 id가 저장
   - bus_stop_id.csv는 버스정류장의 고유 id, 고유 ARS번호,버스정류장 이름이 저장됨
   - bus_stop.xml 파일에는 특정 버스정류장에서 출력할 버스정류장들의 id가 들어감
+#### python files
+  - bus_stop_interface.py는 버스 정류장 인터페이스 소스코드. 필요한 모듈 설치 후 python3로 해당 파일 실행 시 버스 정류장 인터페이스 실행
+  -  
+#### voice flies
+  - 버스 정류장 인터페이스에서 버튼 클릭 시 출력될 음성들 버스 버튼 선택, 버스 버튼 취소, 운행 종료 시 
+#### png files
+  - 버스 정류장 인터페이스 구현에 사용되는 이미지 파일들
+  - end_bus.png, push_button.png , pop_button.png는 버스번호 버튼에서 사용되는 이미지
+  - bus_stop_list.png는 버스 정류장 버튼에 사용되는 이미지 파일
